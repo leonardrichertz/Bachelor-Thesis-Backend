@@ -11,6 +11,8 @@ class WeatherDataController extends Controller
     {
         $lat = $request->input('lat');
         $lon = $request->input('lon');
+        #Default to metric, if nothiing else if provided
+        $unit = $request->input('unit', 'metric');
 
         if (!$lat || !$lon) {
             $data = [
@@ -27,6 +29,7 @@ class WeatherDataController extends Controller
                     'lon' => -$lon,
                     'exclude' => 'hourly,daily',
                     'appid' => env('OPENWEATHER_API_KEY'),
+                    'units' => $unit,
                 ],
                 'verify' => false, // Disbale SSL verification. Not recommended..
             ]);
