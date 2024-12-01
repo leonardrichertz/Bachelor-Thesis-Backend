@@ -11,27 +11,27 @@ class WeatherDataController extends Controller
     {
         $lat = $request->input('lat');
         $lon = $request->input('lon');
-        #Default to metric, if nothiing else if provided
+        #Default to metric, if nothing else if provided
         $unit = $request->input('unit', 'metric');
 
-        if (!$lat || !$lon) {
+        if (!$lat || !$lon || !in_array($unit, ['metric', 'imperial'])) {
             $data = [
                 'status' => 400,
-                'message' => 'Latitude and Longitude are required',
+                'message' => 'Invalid request.',
             ];
             return response()->json($data, 400);
         }
         try{
             $client = new Client();
-            $response = $client->request('GET', env('OPENWEATHER_API_URL'), [
+            $response = $client->request('GET', env('OPENWEATHER_API_URL') . '/data/3.0/onecall', [
                 'query' => [
                     'lat' => $lat,
-                    'lon' => -$lon,
-                    'exclude' => 'hourly,daily',
+                    'lon' => $lon,
+                    'exclude' => 'minutely,hourly',
                     'appid' => env('OPENWEATHER_API_KEY'),
                     'units' => $unit,
                 ],
-                'verify' => false, // Disbale SSL verification. Not recommended..
+                'verify' => false, // Disable SSL verification. Not recommended..
             ]);
             $weatherData = json_decode($response->getBody(), true);
         
@@ -45,6 +45,35 @@ class WeatherDataController extends Controller
             $data = [
                 'status' => 500,
                 'message' => 'Failed to fetch weather data',
+                'error' => $e->getMessage(),
+            ];
+            return response()->json($data, 500);
+        }      
+    }
+
+    public function coordinates(Request $request){
+
+        $location = $request->input('location');
+        try{
+            $client = new Client();
+            $response = $client->request('GET', env('OPENWEATHER_API_URL') . '/geo/1.0/direct', [
+                'query' => [
+                    'q' => $location,
+                ],
+                'verify' => false, // Disable SSL verification. Not recommended..
+            ]);
+            $locationData = json_decode($response->getBody(), true);
+        
+            $data = [
+                'status' => 200,
+                'message' => 'Latitude and Longitude fetched successfully',
+                'data' => $locationData,
+            ];
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            $data = [
+                'status' => 500,
+                'message' => 'Failed to fetch latitute and longitude',
                 'error' => $e->getMessage(),
             ];
             return response()->json($data, 500);

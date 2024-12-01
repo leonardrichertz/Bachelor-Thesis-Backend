@@ -16,3 +16,5 @@ Route::post('student', [StudentController::class, 'store']);
 Route::put('student/edit/{id}', [StudentController::class, 'update']);
 
 Route::get('weather', [WeatherDataController::class, 'index']);
+
+Route::get('coordinates', [WeatherDataController::class, 'coordinates']);
