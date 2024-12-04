@@ -53,7 +53,7 @@ class WeatherDataController extends Controller
 
     public function coordinates(Request $request){
 
-        $location = $request->input('location');
+        $location = $request->input('location').trim().toLowerCase();
         try{
             $client = new Client();
             $response = $client->request('GET', env('OPENWEATHER_API_URL') . '/geo/1.0/direct', [
