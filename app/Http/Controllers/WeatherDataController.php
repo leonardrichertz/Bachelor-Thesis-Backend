@@ -50,33 +50,4 @@ class WeatherDataController extends Controller
             return response()->json($data, 500);
         }      
     }
-
-    public function coordinates(Request $request){
-
-        $location = $request->input('location').trim().toLowerCase();
-        try{
-            $client = new Client();
-            $response = $client->request('GET', env('OPENWEATHER_API_URL') . '/geo/1.0/direct', [
-                'query' => [
-                    'q' => $location,
-                ],
-                'verify' => false, // Disable SSL verification. Not recommended..
-            ]);
-            $locationData = json_decode($response->getBody(), true);
-        
-            $data = [
-                'status' => 200,
-                'message' => 'Latitude and Longitude fetched successfully',
-                'data' => $locationData,
-            ];
-            return response()->json($data, 200);
-        } catch (\Exception $e) {
-            $data = [
-                'status' => 500,
-                'message' => 'Failed to fetch latitute and longitude',
-                'error' => $e->getMessage(),
-            ];
-            return response()->json($data, 500);
-        }      
-    }
 }
