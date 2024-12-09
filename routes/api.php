@@ -17,7 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('coordinates', [WeatherDataController::class, 'coordinates']);
     Route::get('locations', [LocationController::class, 'index']);
     Route::post('locations', [LocationController::class, 'store']);
-    Route::delete('locations/{id}', [LocationController::class, 'remove']);
+    Route::delete('locations', [LocationController::class, 'remove']);
 });
 
 Route::fallback(function () {

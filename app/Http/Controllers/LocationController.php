@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Models\Location;
 
 class LocationController extends Controller
 {
     public function index(Request $request)
     {
-       return auth()->user()->locations;
+        $user = $request->user();
+
+        $locations = Location::where('user_id', $user->id)->get();
+
+       return $locations;
     }
 
     public function store(Request $request)
@@ -19,7 +24,8 @@ class LocationController extends Controller
             'longitude' => 'required|numeric',
         ]);
 
-        $location = auth()->user()->locations()->create(attributes: $data);
+        $user = $request->user();
+        $location = $user->locations()->create($data);
 
         return response()->json(data: [
             'status' => 200,
@@ -28,14 +34,21 @@ class LocationController extends Controller
         ], status: 200);
     }
 
-    public function remove($id){        
-        $location = auth()->user()->locations()->find($id);
-        $location->delete();
+    public function remove(Request $request)
+    {
+        $id = $request->query('id');
+        $user = $request->user();
+        $location = $user->locations()->find($id);
 
-        return response()->json(data: [
-            'status' => 200,
-            'message' => 'Location removed successfully',
-        ], status: 200);
+        if ($location) {
+            $location->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Location removed successfully',
+            ], 200);
+        }
+
+        return response()->json(['message' => 'Location not found'], 404);
     }
     
 }
