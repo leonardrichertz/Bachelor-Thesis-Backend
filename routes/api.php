@@ -8,7 +8,7 @@ use App\Http\Controllers\AuthenticationController;
 
 Route::post('login', [AuthenticationController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:weather:all'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });

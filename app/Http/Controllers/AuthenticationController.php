@@ -18,7 +18,7 @@ class AuthenticationController extends Controller
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token', ['weather:all'])->plainTextToken;
 
             return response()->json(data: [
                 'access_token' => $token,
