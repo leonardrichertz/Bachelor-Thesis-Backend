@@ -38,6 +38,9 @@ class LocationController extends Controller
     {
         $id = $request->query('id');
         $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
         $location = $user->locations()->find($id);
 
         if ($location) {

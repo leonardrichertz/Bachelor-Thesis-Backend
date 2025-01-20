@@ -22,8 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
+        // $middleware->statefulApi();
+
         
-        // Registering abilities middleware aliases
+        // // Registering abilities middleware aliases
         $middleware->alias([
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,

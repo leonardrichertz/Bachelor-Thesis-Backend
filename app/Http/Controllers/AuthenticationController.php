@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -15,18 +16,11 @@ class AuthenticationController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-
-            $token = $user->createToken('auth_token', ['weather:all'])->plainTextToken;
-
-            return response()->json(data: [
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ]);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+ 
+            return response()->json(['message' => 'Authenticated'], 204);
         }
-
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 }
