@@ -10,11 +10,17 @@ class LocationController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        try{
+            $user = $request->user();
 
-        $locations = Location::where('user_id', $user->id)->get();
-
-       return $locations;
+            $locations = Location::where('user_id', $user->id)->get();
+    
+            return $locations;
+        }
+        catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+       
     }
 
     public function store(Request $request)
