@@ -31,7 +31,7 @@ class WeatherDataController extends Controller
                     'appid' => env('OPENWEATHER_API_KEY'),
                     'units' => $unit,
                 ],
-                'verify' => false, // Disable SSL verification. Not recommended..
+                'verify' => false, // Disable SSL verification. Not recommended, but the API request did not work without it.
             ]);
             $weatherData = json_decode($response->getBody(), true);
         
