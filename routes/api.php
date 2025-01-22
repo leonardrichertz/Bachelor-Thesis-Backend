@@ -6,9 +6,9 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\WeatherDataController;
 use App\Http\Controllers\AuthenticationController;
 
-Route::middleware(['throttle:5,1'])->post('login', [AuthenticationController::class, 'login']);
+Route::middleware(['throttle:api'])->post('login', [AuthenticationController::class, 'login']);
 
-Route::middleware(['auth:sanctum', 'throttle:30,1', 'abilities:weather:all'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api', 'abilities:weather:all'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
