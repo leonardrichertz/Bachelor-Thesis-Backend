@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'abilities:weather:all'])->gr
     Route::get('locations', [LocationController::class, 'index']);
     Route::post('locations', [LocationController::class, 'store']);
     Route::delete('locations', [LocationController::class, 'remove']);
+    Route::post('/logout', [AuthenticationController::class, 'logout']);
+
 });
 
 Route::fallback(function () {

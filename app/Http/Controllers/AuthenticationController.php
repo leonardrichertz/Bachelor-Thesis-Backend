@@ -22,4 +22,18 @@ class AuthenticationController extends Controller
         }
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
+
+    public function logout(Request $request)
+    {
+        try {
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return response()->json(['message' => 'Logged out'], 204);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to logout'], 500);
+        }
+    }
 }
